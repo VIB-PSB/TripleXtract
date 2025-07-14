@@ -141,7 +141,7 @@ class DataExporter():
 
         ######## triple calculation ########
         items_per_line = 2
-        triple_evidences_df = pd.DataFrame(columns = ['species_id', 'trait_id', 'gene_id', 'gene_name', 'gene_synonyms', 'evidence_code', 'db_reference', 'sctrait_annotations', 'ortho_species_id', 'ortho_gene_name'])
+        triple_evidences_df = pd.DataFrame(columns = ['species_id', 'trait_id', 'gene_id', 'gene_name', 'gene_synonyms', 'evidence_code', 'db_reference', 'triplextract_annotations', 'ortho_species_id', 'ortho_gene_name'])
 
         with open(species_list_file_name, "r", encoding="utf-8") as species_list_file:
             for line in species_list_file:
@@ -223,7 +223,7 @@ class DataExporter():
         pd.DataFrame
             dataframe containing triples for the given species from all the sources
         """
-        all_triples_df = pd.DataFrame(columns = ['species_id', 'trait_id', 'gene_id', 'gene_name', 'gene_synonyms', 'evidence_code', 'db_reference', 'sctrait_annotations'])
+        all_triples_df = pd.DataFrame(columns = ['species_id', 'trait_id', 'gene_id', 'gene_name', 'gene_synonyms', 'evidence_code', 'db_reference', 'triplextract_annotations'])
         all_triples_df = pd.concat([all_triples_df, self._collect_tm_triples_for_tax_id(tax_id, is_orthology_search)])
         
         return all_triples_df
@@ -271,7 +271,7 @@ class DataExporter():
             if not tm_triples_df.empty:
                 tm_triples_df['evidence_code'] = "TAS"
                 tm_triples_df['db_reference'] = tm_triples_df.apply(lambda row : f"PMID:{row['pubmed_id']}", axis=1)
-                tm_triples_df['sctrait_annotations'] = tm_triples_df.apply(lambda row : f"max_score:{row['max_score']}|ev_count:{row['ev_count']}", axis=1)
+                tm_triples_df['triplextract_annotations'] = tm_triples_df.apply(lambda row : f"max_score:{row['max_score']}|ev_count:{row['ev_count']}", axis=1)
                 tm_triples_df.drop(columns=['pubmed_id', 'max_score', 'ev_count'], inplace=True)
         else:
             tools.print_info_message("No TM triples found.", 4)
@@ -302,13 +302,13 @@ class DataExporter():
         gaf_df['db_object_synonym'] = triples_df['gene_synonyms']
         gaf_df['taxon'] = triples_df['species_id']
 
-        gaf_df['db'] = "scTrait"
+        gaf_df['db'] = "TripleXtract"
         gaf_df['qualifier'] = "contributes_to"
         gaf_df['with_or_from'] = ""
         gaf_df['aspect'] = "P"
         gaf_df['db_object_type'] = "protein"
         gaf_df['date'] = date_now
-        gaf_df['assigned_by'] = "scTrait"
+        gaf_df['assigned_by'] = "TripleXtract"
         gaf_df['annotation_extension'] = ""
         gaf_df['gene_product_form_id'] = ""
 
@@ -357,7 +357,7 @@ class DataExporter():
         triple_evidences_df : pd.DataFrame
             dataframe with evidences to export
         """
-        evidences_df = triple_evidences_df[['gene_name', 'trait_id', 'species_id', 'evidence_code', 'db_reference', 'sctrait_annotations', 'ortho_species_id', 'ortho_gene_name']].drop_duplicates()
+        evidences_df = triple_evidences_df[['gene_name', 'trait_id', 'species_id', 'evidence_code', 'db_reference', 'triplextract_annotations', 'ortho_species_id', 'ortho_gene_name']].drop_duplicates()
         evidences_file_name = os.path.join(self.out_dir, f"{self.output_file_prefix}__evidences__{self.output_file_suffix}.tsv")
         with open(evidences_file_name, "w", encoding="utf-8") as output_file:
             if self.verbose:
@@ -416,7 +416,7 @@ class DataExporter():
         Exports the provided dataframe as a GO file to be used with MINI-EX, having following columns:
         - trait id
         - gene name
-        - evidence code (replaced by 'SCTRAIT')
+        - evidence code (replaced by 'TRIPLEXTRACT')
         - trait synonyms
 
         Parameters
@@ -429,7 +429,7 @@ class DataExporter():
         result_df = pd.DataFrame()
         result_df['trait_id'] = features_df['trait_id']
         result_df['gene_name'] = features_df['gene_name']
-        result_df['evidence_code'] = "SCTRAIT"
+        result_df['evidence_code'] = "TRIPLEXTRACT"
         result_df['trait_synonyms'] = features_df['trait_id'].map(self.trait_synonyms_dict)  # extend trait id with its synonyms
         result_df = result_df.dropna()  # some parental terms are "molecular function" -> we remove them
 
