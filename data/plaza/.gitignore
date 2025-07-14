@@ -1,0 +1,9 @@
+*.csv.gz
+*.png
+*.xlsx
+*.tsv
+ncbi__*
+plaza__*
+align__*
+/plaza_identifiers.csv
+/plaza_identifiers_full.csv

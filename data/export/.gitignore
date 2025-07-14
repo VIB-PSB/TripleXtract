@@ -1,0 +1,6 @@
+*.csv
+*.gaf
+*.sctrait
+*.tsv
+*.xlsx
+/venn.png
