@@ -1,0 +1,16 @@
+# List of species for which triples should be exported
+# The format is: species common tame TAB species tax id
+# Arabidopsis thaliana	3702
+# Brassica napus	3708
+# Brassica rapa	3711
+# Glycine max	3847
+# Musa acuminata	214697
+# Nicotiana tabacum	4097
+# Oryza sativa	39947
+# Populus trichocarpa	3694
+# Punica granatum	22663
+# Solanum lycopersicum	4081
+# Solanum tuberosum	4113
+# Sorghum bicolor	4558
+# Triticum aestivum	4565
+# Zea mays	4577

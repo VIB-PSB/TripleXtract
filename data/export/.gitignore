@@ -1,6 +1,1 @@
-*.csv
-*.gaf
-*.sctrait
-*.tsv
-*.xlsx
-/venn.png
+export__*
